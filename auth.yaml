@@ -1,0 +1,26 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicyAbac
+metadata:
+  name: user-currency-service
+  namespace: user-currency-service
+spec:
+  abacPrinciples:
+    - name: my-virtual-principle
+      namespaceSelectors:
+        - matchLabels:
+            this: that
+      podSelectors:
+        - matchLabels:
+            this: that
+  authorizationPolicyTemplate:
+    spec:
+      action: DENY
+      rules:
+      - from:
+        - source:
+            principals:
+            - my-virtual-principle
+        when:
+        - key: request.auth.principal
+          values:
+          - my-virtual-principle

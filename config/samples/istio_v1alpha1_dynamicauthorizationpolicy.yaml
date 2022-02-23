@@ -1,0 +1,6 @@
+apiVersion: istio.aweis.io/v1alpha1
+kind: DynamicAuthorizationPolicy
+metadata:
+  name: dynamicauthorizationpolicy-sample
+spec:
+  # TODO(user): Add fields here

@@ -1,6 +1,16 @@
-domain: security.aweis.io
+domain: aweis.io
 layout:
 - go.kubebuilder.io/v3
 projectName: istio-dynamic-principles
 repo: github.com/aweis89/istio-abac-policy
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: aweis.io
+  group: istio
+  kind: DynamicAuthorizationPolicy
+  path: github.com/aweis89/istio-abac-policy/api/v1alpha1
+  version: v1alpha1
 version: "3"
