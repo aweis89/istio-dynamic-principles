@@ -28,7 +28,7 @@ import (
 
 	istiov1alpha1 "github.com/aweis89/istio-abac-policy/api/v1alpha1"
 	"github.com/pkg/errors"
-	securityv1beta1 "istio.io/api/security/v1beta1"
+	istioapi "istio.io/client-go/pkg/apis/security/v1beta1"
 )
 
 // DynamicAuthorizationPolicyReconciler reconciles a DynamicAuthorizationPolicy object
@@ -96,6 +96,6 @@ func (r *DynamicAuthorizationPolicyReconciler) Reconcile(ctx context.Context, re
 func (r *DynamicAuthorizationPolicyReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&istiov1alpha1.DynamicAuthorizationPolicy{}).
-		Owns(&securityv1beta1.AuthorizationPolicy{}).
+		Owns(&istioapi.AuthorizationPolicy{}).
 		Complete(r)
 }

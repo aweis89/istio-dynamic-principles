@@ -20,6 +20,7 @@ import (
 	securityv1beta1 "istio.io/api/security/v1beta1"
 	v1beta1 "istio.io/api/type/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -69,6 +70,9 @@ type MatchLabel map[string]string
 type DynamicAuthorizationPolicyStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	WatchingPods []types.NamespacedName
+
+	WatchingNamespaces []string
 }
 
 //+kubebuilder:object:root=true
