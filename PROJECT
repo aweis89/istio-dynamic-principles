@@ -1,0 +1,6 @@
+domain: security.aweis.io
+layout:
+- go.kubebuilder.io/v3
+projectName: istio-dynamic-principles
+repo: github.com/aweis89/istio-abac-policy
+version: "3"
