@@ -18,7 +18,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 
 	corev1 "k8s.io/api/core/v1"
 	kerrors "k8s.io/apimachinery/pkg/api/errors"
@@ -43,7 +42,6 @@ type DynamicAuthorizationPolicyReconciler struct {
 
 func (r *DynamicAuthorizationPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := log.FromContext(ctx)
-	log.Info("processing", "DynamicAuthorizationPolicy", req.NamespacedName)
 
 	dap := peerauthv1.DynamicAuthorizationPolicy{}
 	err := r.Get(ctx, req.NamespacedName, &dap)
@@ -68,10 +66,7 @@ func (r *DynamicAuthorizationPolicyReconciler) Reconcile(ctx context.Context, re
 
 		for _, pod := range pods.Items {
 			log.Info("processing", "Pod", pod.GetName())
-			sa := pod.Spec.ServiceAccountName
-			saNN := fmt.Sprintf("%s/ns/%s/sa/%s", "cluster.local", pod.GetNamespace(), sa)
-			log.Info("adding principle", "principle", saNN)
-			sapm.Add(policy.Name, saNN)
+			sapm.Map(policy, pod)
 		}
 	}
 

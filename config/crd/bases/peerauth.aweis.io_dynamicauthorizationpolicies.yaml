@@ -49,9 +49,13 @@ spec:
                         type: string
                       description: Set is a map of label:value. It implements Labels.
                       type: object
+                    trustDomain:
+                      default: cluster.local
+                      type: string
                   required:
                   - name
                   - podSelectors
+                  - trustDomain
                   type: object
                 type: array
             required:

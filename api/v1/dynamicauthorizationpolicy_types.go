@@ -17,10 +17,14 @@ limitations under the License.
 package v1
 
 import (
+	"context"
+	"fmt"
 	"sort"
 
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 // DynamicAuthorizationPolicySpec defines the desired state of DynamicAuthorizationPolicy
@@ -33,7 +37,11 @@ type DynamicPolicy struct {
 	Name         string     `json:"name"`
 	PodSelectors labels.Set `json:"podSelectors"`
 	// +kubebuilder:default:="cluster.local"
-	TrustDomain string
+	TrustDomain string `json:"trustDomain"`
+}
+
+func (dp DynamicPolicy) ListPods(ctx context.Context, c client.Client, pl *corev1.PodList) error {
+	return c.List(ctx, pl, client.MatchingLabels(dp.PodSelectors))
 }
 
 // DynamicAuthorizationPolicyStatus defines the observed state of DynamicAuthorizationPolicy
@@ -60,7 +68,14 @@ type ServiceAccountPolicyMapping map[string]HashSet
 // 	return hashSet, ok
 // }
 
-func (sapm *ServiceAccountPolicyMapping) Add(key, val string) {
+func (sapm *ServiceAccountPolicyMapping) Map(policy DynamicPolicy, pod corev1.Pod) {
+	sa := pod.Spec.ServiceAccountName
+	principle := fmt.Sprintf("%s/ns/%s/sa/%s", policy.TrustDomain, pod.GetNamespace(), sa)
+	// log.Info("adding principle", "principle", principle)
+	sapm.add(policy.Name, principle)
+}
+
+func (sapm *ServiceAccountPolicyMapping) add(key, val string) {
 	if *sapm == nil {
 		*sapm = ServiceAccountPolicyMapping{}
 	}
