@@ -115,7 +115,6 @@ func (sapm *ServiceAccountPolicyMapping) add(key, val string) {
 // 	return nil
 // }
 
-// +kubebuilder:validation:type=array
 type HashSet map[string]bool
 
 // func (hs *HashSet) MarshalJSON() ([]byte, error) {
