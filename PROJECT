@@ -1,0 +1,16 @@
+domain: aweis.io
+layout:
+- go.kubebuilder.io/v3
+projectName: istio-dynamic-principles
+repo: github.com/aweis89/istio-dynamic-principles
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: aweis.io
+  group: peerauth
+  kind: DynamicAuthorizationPolicy
+  path: github.com/aweis89/istio-dynamic-principles/api/v1
+  version: v1
+version: "3"

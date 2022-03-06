@@ -1,0 +1,24 @@
+# permissions for end users to edit dynamicauthorizationpolicies.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: dynamicauthorizationpolicy-editor-role
+rules:
+- apiGroups:
+  - peerauth.aweis.io
+  resources:
+  - dynamicauthorizationpolicies
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - peerauth.aweis.io
+  resources:
+  - dynamicauthorizationpolicies/status
+  verbs:
+  - get

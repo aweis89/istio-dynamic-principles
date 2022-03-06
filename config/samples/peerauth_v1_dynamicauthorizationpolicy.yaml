@@ -1,0 +1,12 @@
+apiVersion: peerauth.aweis.io/v1
+kind: DynamicAuthorizationPolicy
+metadata:
+  name: dynamicauthorizationpolicy-sample
+spec:
+  dynamicPolicies:
+    - name: foo
+      podSelectors:
+        app: user-access-service
+    - name: java
+      podSelectors:
+        app.kubernetes.io/name: app-java
