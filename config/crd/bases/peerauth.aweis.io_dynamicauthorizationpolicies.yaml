@@ -71,14 +71,10 @@ spec:
                     type: boolean
                   type: object
                 type: object
-            required:
-            - serviceAccountPolicyMapping
             type: object
         type: object
     served: true
     storage: true
-    subresources:
-      status: {}
 status:
   acceptedNames:
     kind: ""

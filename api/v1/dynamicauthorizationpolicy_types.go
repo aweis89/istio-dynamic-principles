@@ -46,6 +46,7 @@ func (dp DynamicPolicy) ListPods(ctx context.Context, c client.Client, pl *corev
 
 // DynamicAuthorizationPolicyStatus defines the observed state of DynamicAuthorizationPolicy
 type DynamicAuthorizationPolicyStatus struct {
+	// +kubebuilder:validation:Optional
 	ServiceAccountPolicyMapping ServiceAccountPolicyMapping `json:"serviceAccountPolicyMapping"`
 	// ServiceAccountPolicyMapping ServiceAccountPolicyMappingType `json:"serviceAccountPolicyMapping"`
 }
@@ -150,12 +151,9 @@ func (hs *HashSet) Add(val string) {
 	(*hs)[val] = true
 }
 
-func (hs *HashSet) Slice() []string {
-	if *hs == nil {
-		*hs = make(HashSet)
-	}
+func (hs HashSet) Slice() []string {
 	keys := []string{}
-	for k := range *hs {
+	for k := range hs {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
@@ -163,7 +161,6 @@ func (hs *HashSet) Slice() []string {
 }
 
 //+kubebuilder:object:root=true
-//+kubebuilder:subresource:status
 
 // DynamicAuthorizationPolicy is the Schema for the dynamicauthorizationpolicies API
 type DynamicAuthorizationPolicy struct {
@@ -195,7 +192,7 @@ func (dap *DynamicAuthorizationPolicy) GetPolicies() []DynamicPolicy {
 
 //+kubebuilder:object:root=true
 
-// DynamicAuthorizationPolicyList contains a list of DynamicAuthorizationPolicy
+// DynamicAuthorizationPolicyList contains a list of DynamicAuthorizationPolicy.
 type DynamicAuthorizationPolicyList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`

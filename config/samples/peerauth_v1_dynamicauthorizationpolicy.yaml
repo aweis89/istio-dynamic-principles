@@ -5,8 +5,10 @@ metadata:
 spec:
   dynamicPolicies:
     - name: foo
+      trustDomain: cluster.local
       podSelectors:
         app: user-access-service
     - name: java
+      trustDomain: cluster.local
       podSelectors:
         app.kubernetes.io/name: app-java
