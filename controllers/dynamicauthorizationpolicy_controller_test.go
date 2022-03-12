@@ -102,7 +102,6 @@ var _ = Describe("DynamicAuthorizationPolicy controller", func() {
 		Eventually(func(g Gomega) {
 			createdDap := v1.DynamicAuthorizationPolicy{}
 			err := k8sClient.Get(ctx, dapNN, &createdDap)
-			g.Expect(createdDap.GetLabels()).To(HaveKey("labelKey"))
 			g.Expect(err).NotTo(HaveOccurred())
 			policy := createdDap.Status.ServiceAccountPolicyMapping[dynamicPolicy.Name]
 			expectedPolicy := fmt.Sprintf("%s/ns/%s/sa/%s",
