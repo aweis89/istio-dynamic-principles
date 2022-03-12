@@ -34,7 +34,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// DynamicAuthorizationPolicyReconciler reconciles a DynamicAuthorizationPolicy object
+// DynamicAuthorizationPolicyReconciler reconciles a DynamicAuthorizationPolicy object.
 type DynamicAuthorizationPolicyReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
@@ -91,23 +91,6 @@ func (r *DynamicAuthorizationPolicyReconciler) Reconcile(ctx context.Context, re
 		return ctrl.Result{}, errors.Wrapf(err,
 			"unable to update DynamicAuthorizationPolicy %s", req.NamespacedName)
 	}
-
-	// dap = peerauthv1.DynamicAuthorizationPolicy{}
-	// err = r.Get(ctx, req.NamespacedName, &dap)
-	// if err != nil {
-	// 	if kerrors.IsNotFound(err) {
-	// 		log.Info("resource no longer available", "DynamicAuthorizationPolicy", req.NamespacedName)
-	// 		return ctrl.Result{}, nil
-	// 	}
-	// 	return ctrl.Result{}, errors.Wrapf(err,
-	// 		"unable to get DynamicAuthorizationPolicy %s", req.NamespacedName)
-	// }
-	// dap.Status.ServiceAccountPolicyMapping = sapm
-	// if err := r.Status().Update(ctx, &dap); err != nil {
-	// 	return ctrl.Result{}, errors.Wrapf(err,
-	// 		"unable to update DynamicAuthorizationPolicy %s", req.NamespacedName)
-	// }
-
 	return ctrl.Result{}, nil
 }
 
@@ -139,9 +122,34 @@ func (r *DynamicAuthorizationPolicyReconciler) MapFunc(obj client.Object) []reco
 	return rr
 }
 
+func (r *DynamicAuthorizationPolicyReconciler) PodSelectorIndexer(obj client.Object) []string {
+	keys := []string{}
+	dap, ok := obj.(*peerauthv1.DynamicAuthorizationPolicy)
+	if !ok {
+		return []string{}
+	}
+
+	for _, policy := range dap.GetPolicies() {
+		for key, val := range policy.PodSelectors {
+			keys = append(keys, indexKey(key, val))
+		}
+	}
+	return keys
+}
+
 // SetupWithManager sets up the controller with the Manager.
 func (r *DynamicAuthorizationPolicyReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	return ctrl.NewControllerManagedBy(mgr).
+	err := mgr.GetFieldIndexer().IndexField(context.TODO(),
+		&peerauthv1.DynamicAuthorizationPolicy{},
+		podSelectorIndex,
+		r.PodSelectorIndexer)
+	if err != nil {
+		return errors.Wrap(err, "unable to add indexer")
+	}
+
+	err = ctrl.NewControllerManagedBy(mgr).
 		For(&peerauthv1.DynamicAuthorizationPolicy{}).
 		Complete(r)
+
+	return errors.Wrap(err, "unable to register DynamicAuthorizationPolicy controller")
 }

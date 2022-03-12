@@ -34,6 +34,8 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
+	corev1 "k8s.io/api/core/v1"
+
 	peerauthv1 "github.com/aweis89/istio-dynamic-principles/api/v1"
 	//+kubebuilder:scaffold:imports
 )
@@ -62,6 +64,9 @@ var _ = BeforeSuite(func() {
 	_, useFakeClient = os.LookupEnv("FAKE_CLIENT")
 
 	err := peerauthv1.AddToScheme(scheme.Scheme)
+	Expect(err).NotTo(HaveOccurred())
+
+	err = corev1.AddToScheme(scheme.Scheme)
 	Expect(err).NotTo(HaveOccurred())
 
 	//+kubebuilder:scaffold:scheme
@@ -94,6 +99,12 @@ var _ = BeforeSuite(func() {
 		Expect(err).ToNot(HaveOccurred())
 
 		err = (&DynamicAuthorizationPolicyReconciler{
+			Client: k8sManager.GetClient(),
+			Scheme: k8sManager.GetScheme(),
+		}).SetupWithManager(k8sManager)
+		Expect(err).ToNot(HaveOccurred())
+
+		err = (&PodReconciler{
 			Client: k8sManager.GetClient(),
 			Scheme: k8sManager.GetScheme(),
 		}).SetupWithManager(k8sManager)
