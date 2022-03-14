@@ -6,7 +6,7 @@ require (
 	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.17.0
 	github.com/pkg/errors v0.9.1
-	istio.io/api v0.0.0-20220222161516-e853cf923465
+	istio.io/api v0.0.0-20220314210023-612ed38e146b
 	istio.io/client-go v1.13.0
 	k8s.io/api v0.23.1
 	k8s.io/apimachinery v0.23.1
